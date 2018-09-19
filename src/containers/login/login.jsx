@@ -2,10 +2,13 @@
 import React,{Component} from 'react'
 
 import {NavBar,WingBlank,List,WhiteSpace,InputItem,Button} from 'antd-mobile'
+import {connect} from 'react-redux'
+import {Redirect} from 'react-router-dom'
 
+import {login} from '../../redux/actions'
 import Logo from '../../componnets/logo/logo'
 // 登录路由组件
-export default class Login extends Component{
+ class Login extends Component{
 
   state = {
     username:'',
@@ -26,12 +29,19 @@ export default class Login extends Component{
     this.props.history.replace('/register')
   }
   render () {
+
+    const {redirectTo,msg} = this.proos.user
+    if (redirectTo){
+      return <Redirect to={redirectTo}/>
+    }
+
     return (
       <div>
         <NavBar>硅谷直聘</NavBar>
         <Logo/>
         <WingBlank>
           <List>
+            {msg ? <p className='error-msg'>{msg}</p> : null}
             <InputItem placeholder = '请输入用户名' onChange={val => this.handleChange('username',val)}>
               用户名：
             </InputItem>
@@ -50,3 +60,8 @@ export default class Login extends Component{
     )
   }
 }
+
+export default connect(
+  state =>({user:state.user}),
+  {login}
+)(Login)
